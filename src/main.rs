@@ -11,4 +11,11 @@ fn main() {
     let tree = evaluations_tree::build_evaluations_tree(10);
 
     println!("{}", tree.evaluate(state));
+
+    let mutations = state.get_possible_mutations();
+
+    for mutation in mutations {
+        let new_state = mutation(state);
+        println!("{}", tree.evaluate(new_state))
+    }
 }
