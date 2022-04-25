@@ -36,20 +36,6 @@ struct TreeSearchNode<'a, T> where T : State {
     mutations : &'a Vec<Box<Mutation<T>>>
 }
 
-/*
-1. Selection
-Starting at root node R, recursively select optimal child nodes (explained below) until a leaf node L is reached.
-
-2. Expansion
-If L is a not a terminal node (i.e. it does not end the game) then create one or more child nodes and select one C.
-
-3. Simulation
-Run a simulated playout from C until a result is achieved.
-
-4. Backpropagation
-Update the current move sequence with the simulation result.
-*/
-
 impl<'a, T> TreeSearchNode<'a, T> where T : State {
     fn new(parent : Option<&'a mut TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
         TreeSearchNode {
