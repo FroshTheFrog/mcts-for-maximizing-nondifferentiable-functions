@@ -1,15 +1,15 @@
 use std::cmp;
-use crate::types::{Mutation, EvaluationTree};
+use crate::types::{Mutation, EvaluationTree, State};
 
-use super::{state_array::StateArray, constants::HEURISTIC_SEARCH_DEPTH};
+use super::{constants::HEURISTIC_SEARCH_DEPTH};
 
-pub fn rollout_strategy(
-    state: StateArray,
-    mutations: &Vec<Box<Mutation<StateArray>>>,
-    tree : &Box<dyn EvaluationTree<StateArray>>,
+pub fn rollout_strategy<T>(
+    state: T,
+    mutations: &Vec<Box<Mutation<T>>>,
+    tree : &Box<dyn EvaluationTree<T>>,
     depth : usize,
     rollout_epsilon : f64,
-    ) -> i32 {
+    ) -> i32 where T : State {
 
     // Keep track of where we currently care so that it does not get stuck in local minima.
     let start_value = tree.evaluate(state);
@@ -44,32 +44,29 @@ pub fn rollout_strategy(
     ))
 }
 
-fn get_rollout_Value(
-    state: StateArray,
-    mutations: &Vec<Box<Mutation<StateArray>>>,
-    tree : &Box<dyn EvaluationTree<StateArray>>,
+fn get_rollout_Value<T>(
+    state: T,
+    mutations: &Vec<Box<Mutation<T>>>,
+    tree : &Box<dyn EvaluationTree<T>>,
     depth : usize,
     start_value : i32
-) -> i32 {
+    ) -> i32 where T : State {
 
-    let mut best_value = i32::MIN;
+    let mut best_value = tree.evaluate(state);
 
     if depth <= 0 {
         return best_value
     }
 
     for mutation in mutations {
+
         let new_state = mutation(state);
-
-        let current_state_value = tree.evaluate(new_state);
-
-        if current_state_value > best_value && current_state_value != start_value {
-            best_value = current_state_value;
-        }
 
         let down_the_tree_value = get_rollout_Value(new_state, mutations, tree, depth - 1, start_value);
 
-        best_value = cmp::max(best_value, down_the_tree_value);
+        if down_the_tree_value > best_value && down_the_tree_value != start_value {
+            best_value = down_the_tree_value;
+        }
     }
 
     best_value

@@ -1,4 +1,6 @@
-use crate::types::{State, Mutation, RollOut, EvaluationTree};
+use std::option;
+
+use crate::{types::{State, Mutation, RollOut, EvaluationTree}, implementations::constants::ROLLOUT_DEPTH};
 
 /*
 fn search(
@@ -15,6 +17,7 @@ fn search(
 */
 
 struct TreeSearchNode<'a, T> where T : State {
+    parent : Option<&'a TreeSearchNode<'a, T>>,
     times_visited : u32,
     average_evaluation : f64,
     state : T,
@@ -37,8 +40,9 @@ Update the current move sequence with the simulation result.
 */
 
 impl<'a, T> TreeSearchNode<'a, T> where T : State {
-    fn new(state : T, mutations : &Vec<Box<Mutation<T>>>) -> TreeSearchNode<T> {
+    fn new(parent : Option<&'a TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
         TreeSearchNode {
+            parent,
             times_visited : 0,
             average_evaluation : 0.0,
             state : state,
@@ -73,13 +77,13 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         best_node.select(uct_exploration)
     }
 
-    fn expand(&mut self) -> &TreeSearchNode<T> {
+    fn expand(&'a mut self) -> &TreeSearchNode<T> {
 
         if self.times_visited == 0 {
             return self;
         }
 
-        self.children = get_children_from_mutations(self.state, &self.mutations);
+        self.children = get_children_from_mutations(Some(self), self.state, &self.mutations);
 
         &self.children[0]
     }
@@ -90,9 +94,11 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         self.average_evaluation += (value as f64 - self.average_evaluation) / self.times_visited as f64;
     }
 
-    fn simulate(&self, rollout : RollOut<T>, tree : &Box<dyn EvaluationTree<T>>, depth : usize, rollout_epsilon : f64,) -> i32 {
-        rollout(self.state, &self.mutations, tree, depth, rollout_epsilon)
+    fn simulate(&self, rollout : RollOut<T>, tree : &Box<dyn EvaluationTree<T>>, rollout_epsilon : f64,) -> i32 {
+        rollout(self.state, &self.mutations, tree, ROLLOUT_DEPTH, rollout_epsilon)
     }
+
+
 }
 
 
@@ -107,9 +113,9 @@ fn ucb(average_evaluation: f64, uct_exploration : f64, times_visited : u32, tota
 }
 
 
-fn get_children_from_mutations<T>(state : T, mutations : &Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<T>> where T : State {
+fn get_children_from_mutations<'a, T>(parent : Option<&'a TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<'a, T>> where T : State {
     mutations.iter().map(|mutation| {
         let child_state = mutation(state);
-        TreeSearchNode::new(child_state, mutations)
+        TreeSearchNode::new(parent, child_state, mutations)
     }).collect()
 }

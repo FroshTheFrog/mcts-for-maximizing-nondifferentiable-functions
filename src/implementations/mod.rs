@@ -2,5 +2,5 @@ pub mod state_array;
 pub mod evaluations_tree;
 pub mod rollout_strategy;
 
-mod constants;
+pub mod constants;
 mod utils;
