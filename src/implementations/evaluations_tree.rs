@@ -6,7 +6,7 @@ use super::{state_array::StateArray, constants::{STATE_SIZE, NODE_VALUE_MIN, NOD
 struct EvaluationNode {
     left : Box<dyn EvaluationTree<StateArray>>,
     right : Box<dyn EvaluationTree<StateArray>>,
-    value : usize,
+    value : i32,
     index : usize,
 }
 
@@ -26,7 +26,7 @@ fn new_random_node(left : Box<dyn EvaluationTree<StateArray>>, right : Box<dyn E
 
 impl EvaluationTree<StateArray> for EvaluationNode {
 
-    fn evaluate(&self, state : StateArray) -> usize {
+    fn evaluate(&self, state : StateArray) -> i32 {
         if state.0[self.index] <= self.value {
             self.left.evaluate(state)
         } else {
@@ -35,7 +35,7 @@ impl EvaluationTree<StateArray> for EvaluationNode {
     }
 }
 
-struct EvaluationLeaf([usize; STATE_SIZE]);
+struct EvaluationLeaf([i32; STATE_SIZE]);
 
 fn new_random_leaf() -> EvaluationLeaf {
     EvaluationLeaf(utils::random_array(NODE_VALUE_MIN, NODE_VALUE_MAX))
@@ -43,12 +43,12 @@ fn new_random_leaf() -> EvaluationLeaf {
 
 impl EvaluationTree<StateArray> for EvaluationLeaf {
 
-    fn evaluate(&self, state : StateArray) -> usize {
+    fn evaluate(&self, state : StateArray) -> i32 {
         dot_product(self.0, state.0)
     }
 }
 
-pub fn build_evaluations_tree(depth : i32) -> Box<dyn EvaluationTree<StateArray>> {
+pub fn build_evaluations_tree(depth : usize) -> Box<dyn EvaluationTree<StateArray>> {
     if depth <= 0 {
         Box::new(new_random_leaf())
     }

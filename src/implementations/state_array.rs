@@ -3,7 +3,7 @@ use std::fmt;
 
 use super::{constants::{STATE_VALUE_MIN, STATE_VALUE_MAX, STATE_SIZE}, utils::random_array};
 
-pub struct StateArray(pub [usize; STATE_SIZE]);
+pub struct StateArray(pub [i32; STATE_SIZE]);
 
 fn make_add_one_mutation(index : usize) -> Box<Mutation<StateArray>> {
     let function = move | state : StateArray | {
