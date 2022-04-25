@@ -1,5 +1,6 @@
 mod types;
 mod implementations;
+mod tree_search;
 
 use crate::{types::State, implementations::{state_array, evaluations_tree}};
 
