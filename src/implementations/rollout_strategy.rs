@@ -6,7 +6,7 @@ use super::{state_array::StateArray, constants::ROLLOUT_DEPTH};
 pub fn rollout_strategy(
     state: StateArray,
     mutations: &Vec<Box<Mutation<StateArray>>>,
-    tree : Box<dyn EvaluationTree<StateArray>>
+    tree : &Box<dyn EvaluationTree<StateArray>>
     ) -> i32 {
 
     // Keep track of where we currently care so that it does not get stuck in local minima.
@@ -18,7 +18,7 @@ pub fn rollout_strategy(
 fn lets_rollout(
     state: StateArray,
     mutations: &Vec<Box<Mutation<StateArray>>>,
-    tree : Box<dyn EvaluationTree<StateArray>>,
+    tree : &Box<dyn EvaluationTree<StateArray>>,
     depth : i32,
     start_value : i32
 ) -> i32 {
