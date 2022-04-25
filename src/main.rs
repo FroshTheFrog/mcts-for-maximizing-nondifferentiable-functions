@@ -2,21 +2,23 @@ mod types;
 mod implementations;
 mod tree_search;
 
-use crate::{types::State, implementations::{state_array, evaluations_tree}};
+use crate::{types::State, implementations::{state_array, evaluations_tree, rollout_strategy::rollout_strategy}, tree_search::search};
+
+/*
+    stat_state : T,
+    rollout : RollOut<T>,
+    tree : &Box<dyn EvaluationTree<T>>,
+    loops : u32,
+    rollout_epsilon : f64,
+    uct_exploration : f64,
+*/
 
 fn main() {
-    let state = state_array::StateArray::random_state();
-
-    println!("{}", state);
+    let start_state = state_array::StateArray::random_state();
 
     let tree = evaluations_tree::build_evaluations_tree(10);
 
-    println!("{}", tree.evaluate(state));
+    let searched_state = search(start_state, rollout_strategy, tree, 500, 0.3, 2.0);
 
-    let mutations = state_array::StateArray::get_possible_mutations();
-
-    for mutation in mutations {
-        let new_state = mutation(state);
-        println!("{}", tree.evaluate(new_state))
-    }
+    println!("{}", tree.evaluate(start_state));
 }

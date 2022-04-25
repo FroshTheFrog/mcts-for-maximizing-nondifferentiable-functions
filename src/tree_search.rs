@@ -1,23 +1,34 @@
-use std::option;
-
 use crate::{types::{State, Mutation, RollOut, EvaluationTree}, implementations::constants::ROLLOUT_DEPTH};
 
-/*
-fn search(
-    &self,
+pub fn search<T>(
+    stat_state : T,
     rollout : RollOut<T>,
     tree : Box<dyn EvaluationTree<T>>,
-    loops : u32, rollout_depth : u32,
+    loops : u32,
     rollout_epsilon : f64,
     uct_exploration : f64,
 ) -> T where T : State {
 
+    let mutations = T::get_possible_mutations();
+
+    let base_node = TreeSearchNode::new(None, start_state, &mutations);
+
+    for _ in 0..loops {
+
+        let selected = base_node.select(uct_exploration);
+
+        let expanded = selected.expand();
+
+        let evaluated = expanded.simulate(rollout, tree, rollout_epsilon);
+
+        expanded.backpropagate(evaluated);
+    }
+
+    base_node.get_max_state(tree)
 }
 
-*/
-
 struct TreeSearchNode<'a, T> where T : State {
-    parent : Option<&'a TreeSearchNode<'a, T>>,
+    parent : Option<&'a mut TreeSearchNode<'a, T>>,
     times_visited : u32,
     average_evaluation : f64,
     state : T,
@@ -40,7 +51,7 @@ Update the current move sequence with the simulation result.
 */
 
 impl<'a, T> TreeSearchNode<'a, T> where T : State {
-    fn new(parent : Option<&'a TreeSearchNode<T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
+    fn new(parent : Option<&'a mut TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
         TreeSearchNode {
             parent,
             times_visited : 0,
@@ -51,7 +62,7 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         }
     }
 
-    fn select(&self, uct_exploration : f64) -> &TreeSearchNode<T> {
+    fn select(&self, uct_exploration : f64) -> &TreeSearchNode<'a, T> {
 
         if self.children.len() == 0 {
             return self;
@@ -88,16 +99,37 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         &self.children[0]
     }
 
+    fn simulate(&self, rollout : RollOut<T>, tree : &Box<dyn EvaluationTree<T>>, rollout_epsilon : f64,) -> i32 {
+        rollout(self.state, &self.mutations, tree, ROLLOUT_DEPTH, rollout_epsilon)
+    }
+
+    fn backpropagate(&mut self, value : i32) {
+        self.update_average(value);
+
+        if let Some(parent) = self.parent {
+            parent.backpropagate(value);
+        }
+    }
+
+    fn get_max_state(&self, tree : &Box<dyn EvaluationTree<T>>) -> T {
+
+        let best_state = self.state;
+
+        for child in &self.children {
+            let child_max_state = child.get_max_state(tree);
+
+            if tree.evaluate(child_max_state) > tree.evaluate(best_state) {
+                best_state = child_max_state;
+            }
+        }
+
+        best_state
+    }
 
     fn update_average(&mut self, value : i32) {
         self.times_visited += 1;
         self.average_evaluation += (value as f64 - self.average_evaluation) / self.times_visited as f64;
     }
-
-    fn simulate(&self, rollout : RollOut<T>, tree : &Box<dyn EvaluationTree<T>>, rollout_epsilon : f64,) -> i32 {
-        rollout(self.state, &self.mutations, tree, ROLLOUT_DEPTH, rollout_epsilon)
-    }
-
 
 }
 
@@ -113,7 +145,7 @@ fn ucb(average_evaluation: f64, uct_exploration : f64, times_visited : u32, tota
 }
 
 
-fn get_children_from_mutations<'a, T>(parent : Option<&'a TreeSearchNode<T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<'a, T>> where T : State {
+fn get_children_from_mutations<'a, T>(parent : Option<&'a mut TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<'a, T>> where T : State {
     mutations.iter().map(|mutation| {
         let child_state = mutation(state);
         TreeSearchNode::new(parent, child_state, mutations)
