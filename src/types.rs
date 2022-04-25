@@ -8,7 +8,7 @@ pub trait State : fmt::Display + Clone + Copy {
 pub type Mutation<T> = dyn Fn(T) -> T;
 
 pub trait EvaluationTree<T> where T : State {
-    fn evaluate(&self, state : T) -> i32;
+    fn evaluate(&self, state : T) -> i32 where T : State;
 }
 
-type RollOut<T> = fn(T, Vec<Box<Mutation<T>>>, dyn EvaluationTree<T>) -> i32;
+type RollOut<T> = fn(T, Vec<Box<Mutation<T>>>, Box<dyn EvaluationTree<T>>) -> i32;
