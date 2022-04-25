@@ -41,7 +41,7 @@ impl types::State for StateArray {
         StateArray(random_array(STATE_VALUE_MIN, STATE_VALUE_MAX))
     }
 
-    fn get_possible_mutations(&self) -> Vec<Box<Mutation<Self>>> {
+    fn get_possible_mutations() -> Vec<Box<Mutation<Self>>> {
         let mut mutations = Vec::new();
 
         for index in 0..STATE_SIZE {

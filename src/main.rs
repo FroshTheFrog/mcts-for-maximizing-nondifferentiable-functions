@@ -12,7 +12,7 @@ fn main() {
 
     println!("{}", tree.evaluate(state));
 
-    let mutations = state.get_possible_mutations();
+    let mutations = state_array::StateArray::get_possible_mutations();
 
     for mutation in mutations {
         let new_state = mutation(state);
