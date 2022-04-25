@@ -1,10 +1,7 @@
 use crate::types;
 use std::fmt;
 
-use super::constants::STATE_VALUE_MIN;
-use super::constants::STATE_VALUE_MAX;
-use super::constants::STATE_SIZE;
-use super::utils::random_array;
+use super::{constants::{STATE_VALUE_MIN, STATE_VALUE_MAX, STATE_SIZE}, utils::random_array};
 
 pub struct StateArray(pub [usize; STATE_SIZE]);
 
