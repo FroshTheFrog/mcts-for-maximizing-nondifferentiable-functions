@@ -40,7 +40,7 @@ Update the current move sequence with the simulation result.
 */
 
 impl<'a, T> TreeSearchNode<'a, T> where T : State {
-    fn new(parent : Option<&'a TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
+    fn new(parent : Option<&'a TreeSearchNode<T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
         TreeSearchNode {
             parent,
             times_visited : 0,
@@ -77,7 +77,7 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         best_node.select(uct_exploration)
     }
 
-    fn expand(&'a mut self) -> &TreeSearchNode<T> {
+    fn expand(&'a mut self) -> &'a TreeSearchNode<'a, T> {
 
         if self.times_visited == 0 {
             return self;
@@ -113,7 +113,7 @@ fn ucb(average_evaluation: f64, uct_exploration : f64, times_visited : u32, tota
 }
 
 
-fn get_children_from_mutations<'a, T>(parent : Option<&'a TreeSearchNode<'a, T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<'a, T>> where T : State {
+fn get_children_from_mutations<'a, T>(parent : Option<&'a TreeSearchNode<T>>, state : T, mutations : &'a Vec<Box<Mutation<T>>>) -> Vec<TreeSearchNode<'a, T>> where T : State {
     mutations.iter().map(|mutation| {
         let child_state = mutation(state);
         TreeSearchNode::new(parent, child_state, mutations)
