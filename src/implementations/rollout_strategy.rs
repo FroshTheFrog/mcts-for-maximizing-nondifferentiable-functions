@@ -1,5 +1,6 @@
 use std::cmp;
 use crate::types::{Mutation, EvaluationTree, State};
+use rand::Rng;
 
 use super::{constants::HEURISTIC_SEARCH_DEPTH};
 
@@ -15,28 +16,34 @@ pub fn rollout_strategy<T>(
     let start_value = tree.evaluate(state);
 
     let mut best_value = i32::MIN;
-    let mut best_index = 0;
+    let mut best_mutation = &mutations[0];
 
     if depth <= 0 {
         return start_value;
     }
 
-    for index in 0..mutations.len() {
-        let new_state = mutations[index](state);
+    for mutation in mutations {
+        let new_state = mutation(state);
 
         let new_state_value = get_rollout_Value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, start_value);
 
         if new_state_value > best_value {
             best_value = new_state_value;
-            best_index = index;
+            best_mutation = mutation;
         }
+    }
+
+    let mut rng = rand::thread_rng();
+
+    if rollout_epsilon <= rng.gen_range(0.0..1.0) {
+        best_mutation = &mutations[rng.gen_range(0..mutations.len())];
     }
 
     cmp::max(
         start_value,
 
     rollout_strategy(
-        mutations[best_index](state),
+        best_mutation(state),
         mutations,
         tree,
         depth -1,
