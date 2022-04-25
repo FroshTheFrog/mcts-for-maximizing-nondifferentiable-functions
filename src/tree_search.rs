@@ -1,17 +1,17 @@
 use crate::{types::{State, Mutation, RollOut, EvaluationTree}, implementations::constants::ROLLOUT_DEPTH};
 
 pub fn search<T>(
-    stat_state : T,
+    start_state : T,
     rollout : RollOut<T>,
-    tree : Box<dyn EvaluationTree<T>>,
+    tree : &Box<dyn EvaluationTree<T>>,
     loops : u32,
     rollout_epsilon : f64,
     uct_exploration : f64,
-) -> T where T : State {
+    ) -> T where T : State {
 
     let mutations = T::get_possible_mutations();
 
-    let base_node = TreeSearchNode::new(None, start_state, &mutations);
+    let mut base_node = TreeSearchNode::new(None, start_state, &mutations);
 
     for _ in 0..loops {
 
@@ -62,7 +62,7 @@ impl<'a, T> TreeSearchNode<'a, T> where T : State {
         }
     }
 
-    fn select(&self, uct_exploration : f64) -> &TreeSearchNode<'a, T> {
+    fn select(& mut self, uct_exploration : f64) -> & mut TreeSearchNode<'a, T> {
 
         if self.children.len() == 0 {
             return self;
