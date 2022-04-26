@@ -75,7 +75,14 @@ where
         previous_states: &mut HashSet<T>,
     ) -> i32 {
         if self.children.len() == 0 {
-            let expanded = self.expand(previous_states);
+            let (expanded, no_children) = self.expand(previous_states);
+
+            if no_children {
+                let value = -(self.average_evaluation as i32) / ((self.times_visited as i32) + 1);
+                self.update_average(value);
+                return value;
+            }
+
             let value = expanded.simulate(rollout, tree, rollout_epsilon, previous_states);
             self.update_average(value);
             return value;
@@ -88,14 +95,18 @@ where
         value
     }
 
-    fn expand(&mut self, previous_states: &mut HashSet<T>) -> &TreeSearchNode<T> {
+    fn expand(&mut self, previous_states: &mut HashSet<T>) -> (&TreeSearchNode<T>, bool) {
         if self.times_visited == 0 {
-            return self;
+            return (self, false);
         }
 
         self.children = get_children_from_mutations(self.state, self.mutations, previous_states);
 
-        &self.children[0]
+        if self.children.len() == 0 {
+            return (self, true);
+        }
+
+        (&self.children[0], false)
     }
 
     fn simulate(
