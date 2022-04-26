@@ -8,11 +8,11 @@ use crate::{types::State, implementations::{state_array, evaluations_tree, rollo
 fn main() {
     let start_state = state_array::StateArray::random_state();
 
-    let tree = evaluations_tree::build_evaluations_tree(10);
+    let tree = evaluations_tree::build_evaluations_tree(11);
+
+    let searched_state = search(start_state, rollout_strategy, &tree, 100000, 0.3, 2.0);
 
     println!("START: {}", tree.evaluate(start_state));
-
-    let searched_state = search(start_state, rollout_strategy, &tree, 10000, 0.3, 2.0);
 
     println!("AFTER SEARCH: {}", tree.evaluate(searched_state));
 }
