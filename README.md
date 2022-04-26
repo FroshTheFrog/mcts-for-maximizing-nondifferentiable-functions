@@ -11,11 +11,11 @@ The state is an array of random numbers.
 The possible mutations are as follows for each value in the state. **Note:** I kept in mind prime factorization when choosing these mutations.
 * Add 1
 * Subtract 1
-* Multiply 2 or 3 or 5 or 7 or 11
-* Divide 2 or 3 or 5 or 7 or 11
+* Multiply 2, 3, 5, 7 or 11
+* Divide 2, 3, 5, 7 or 11
 
 ### **Utility Function**
-For the utility function, to make it nondifferentiable, I randomly constructed a tree that the state could be run through. A predicate moves the state in one direction or another at each node based on if one of its values is greater than a threshold. At each leaf is a random array of values. The utility of a state is found by moving it through the tree and then taking the dot product of it and its leaf.
+For the utility function, to make it nondifferentiable, I randomly constructed a tree that the state could be run through. A predicate moves the state in one direction or another at each node based on if one of the state's values is greater than a threshold. At each leaf is a random array of values. The utility of a state is found by moving it through the tree and then taking the dot product of it and its leaf.
 
 ### **Rollout Strategy**
 The rollout strategy selects actions based on a greedy heuristic. This heuristic returns the max utility of all the states explored when doing a breadth-first search from each action to a depth. In practice however, this strategy was not performant, so the heuristic of each mutation was defined as the utility of the state that it led to. If you wish to increase the search depth passed a depth of 0, you can do so in `implementations\constants\HEURISTIC_SEARCH_DEPTH `. To encourage more exploration, I added an epsilon value that makes it choose a random action a percentage of the time.
@@ -25,106 +25,104 @@ The rollout strategy selects actions based on a greedy heuristic. This heuristic
 * When done looping, the tree is searched to get the best state, and the state with the best utility is returned.
 
 # Results
-Here are the results from the last ten runs with a rollout depth of 40 and 100000 iterations. As you can see, the tree search did not perform much better than randomly searching the states. Note when the action space was only add and subtract by one, it significantly outperformed the random search. This makes sense as it could capitalize off the linearity of the dot product function in local areas in the state space more effectively than randomly searching.
+Here are the results from the last ten runs with a rollout depth of 40 and 100000 iterations. I chose to compare picking nodes in mcts randomly vs using ucb. As you can see, the tree search outperformed randomly searching the states. What's especially notable is that the random searched used much more memory then using ucb - as seen by the size of the trees. Note, when the action space was only add and subtract by one, it significantly outperformed the random search to a much greater extent. This makes sense as it could capitalize off the linearity of the dot product function in local areas in the state space more effectively than randomly searching. However, also keep in mind that the random search was much faster then mcts using ucb because it did not have to do a playoff strategy. For that reason, randomly searching could be more efficient overall.
 
 _______________________________
 
-START: -36591884
+START: -48442113
 
-AFTER SMART SEARCH: 53196443
-WITH A TREE SIZE OF: 744831
+AFTER SMART SEARCH: 61752806
+WITH A TREE SIZE OF: 554326
 
-AFTER RANDOM SEARCH: 53228651
-WITH A TREE SIZE OF: 744283
-
-_______________________________
-
-START: 2740294
-
-AFTER SMART SEARCH: 39041681
-WITH A TREE SIZE OF: 716637
-
-AFTER RANDOM SEARCH: 36075795
-WITH A TREE SIZE OF: 716736
+AFTER RANDOM SEARCH: 47783066
+WITH A TREE SIZE OF: 674045
 
 _______________________________
 
-START: -12754592
+START: -293256
 
-AFTER SMART SEARCH: 58706781
-WITH A TREE SIZE OF: 686352
+AFTER SMART SEARCH: 55941941
+WITH A TREE SIZE OF: 504397
 
-AFTER RANDOM SEARCH: 54195433
-WITH A TREE SIZE OF: 680348
-
-_______________________________
-
-START: 580105
-
-AFTER SMART SEARCH: 52202410
-WITH A TREE SIZE OF: 672851
-
-AFTER RANDOM SEARCH: 51089118
-WITH A TREE SIZE OF: 670935
+AFTER RANDOM SEARCH: 52397138
+WITH A TREE SIZE OF: 685682
 
 _______________________________
 
-START: -14259369
+START: -2024682
 
-AFTER SMART SEARCH: 31269977
-WITH A TREE SIZE OF: 663949
+AFTER SMART SEARCH: 69758204
+WITH A TREE SIZE OF: 239674
 
-AFTER RANDOM SEARCH: 35180660
-WITH A TREE SIZE OF: 675739
-
-_______________________________
-
-START: -4499691
-
-AFTER SMART SEARCH: 36302560
-WITH A TREE SIZE OF: 718495
-
-AFTER RANDOM SEARCH: 35924416
-WITH A TREE SIZE OF: 726483
+AFTER RANDOM SEARCH: 64045661
+WITH A TREE SIZE OF: 727309
 
 _______________________________
 
-START: 22564720
+START: 30007841
 
-AFTER SMART SEARCH: 41122564
-WITH A TREE SIZE OF: 671662
+AFTER SMART SEARCH: 76650000
+WITH A TREE SIZE OF: 519252
 
-AFTER RANDOM SEARCH: 42025146
-WITH A TREE SIZE OF: 674727
-
-_______________________________
-
-START: -12289775
-
-AFTER SMART SEARCH: 38173292
-WITH A TREE SIZE OF: 765237
-
-AFTER RANDOM SEARCH: 37651706
-WITH A TREE SIZE OF: 759507
+AFTER RANDOM SEARCH: 70803037
+WITH A TREE SIZE OF: 740935
 
 _______________________________
 
-START: -15923824
+START: -10995381
 
-AFTER SMART SEARCH: 73376684
-WITH A TREE SIZE OF: 688065
+AFTER SMART SEARCH: 68756507
+WITH A TREE SIZE OF: 503808
 
-AFTER RANDOM SEARCH: 73376684
-WITH A TREE SIZE OF: 692931
+AFTER RANDOM SEARCH: 47697486
+WITH A TREE SIZE OF: 699505
+
+_______________________________
+
+START: 3373254
+
+AFTER SMART SEARCH: 54726790
+WITH A TREE SIZE OF: 390581
+
+AFTER RANDOM SEARCH: 28064957
+WITH A TREE SIZE OF: 764491
 
 _______________________________
 
-START: -2380563
+START: 6390746
 
-AFTER SMART SEARCH: 45010689
-WITH A TREE SIZE OF: 651814
+AFTER SMART SEARCH: 53923088
+WITH A TREE SIZE OF: 526864
 
-AFTER RANDOM SEARCH: 45010689
-WITH A TREE SIZE OF: 666615
+AFTER RANDOM SEARCH: 46342947
+WITH A TREE SIZE OF: 670590
 
 _______________________________
+
+START: 14557786
+
+AFTER SMART SEARCH: 66511117
+WITH A TREE SIZE OF: 557862
+
+AFTER RANDOM SEARCH: 62075797
+WITH A TREE SIZE OF: 796676
+
+_______________________________
+
+START: 8863051
+
+AFTER SMART SEARCH: 56495731
+WITH A TREE SIZE OF: 284735
+
+AFTER RANDOM SEARCH: 46994901
+WITH A TREE SIZE OF: 776321
+
+_______________________________
+
+START: 31875071
+
+AFTER SMART SEARCH: 51856421
+WITH A TREE SIZE OF: 238022
+
+AFTER RANDOM SEARCH: 51102237
+WITH A TREE SIZE OF: 671463
