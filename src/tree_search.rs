@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::{
-    implementations::constants::{ROLLOUT_DEPTH, LOOP_PRINT_INTERVAL, MOVE_AWAY_CONSTANT},
+    implementations::constants::LOOP_PRINT_INTERVAL,
     types::{EvaluationTree, Mutation, RollOut, State},
 };
 
@@ -10,8 +10,10 @@ pub fn search<T>(
     rollout: RollOut<T>,
     tree: &Box<dyn EvaluationTree<T>>,
     loops: u32,
+    rollout_depth: usize,
     rollout_epsilon: f64,
     uct_exploration: f64,
+    move_away_constant: f64,
 ) -> (T, u32)
 where
     T: State,
@@ -23,12 +25,19 @@ where
     let mut base_node = TreeSearchNode::new(start_state, &mutations, &mut previous_states);
 
     for loop_number in 0..loops {
-        
         if loop_number % LOOP_PRINT_INTERVAL == 0 {
             println!("Loop {}", loop_number);
         }
 
-        base_node.run(uct_exploration, rollout, tree, rollout_epsilon, &mut previous_states);
+        base_node.run(
+            uct_exploration,
+            rollout,
+            tree,
+            rollout_epsilon,
+            rollout_depth,
+            &mut previous_states,
+            move_away_constant,
+        );
     }
 
     let best_state = base_node.get_max_state(tree);
@@ -52,7 +61,11 @@ impl<'a, T> TreeSearchNode<'a, T>
 where
     T: State,
 {
-    fn new(state: T, mutations: &'a Vec<Box<Mutation<T>>>, previous_states: &mut HashSet<T>) -> TreeSearchNode<'a, T> {
+    fn new(
+        state: T,
+        mutations: &'a Vec<Box<Mutation<T>>>,
+        previous_states: &mut HashSet<T>,
+    ) -> TreeSearchNode<'a, T> {
         let new_node = TreeSearchNode {
             times_visited: 0,
             average_evaluation: 0.0,
@@ -72,25 +85,43 @@ where
         rollout: RollOut<T>,
         tree: &Box<dyn EvaluationTree<T>>,
         rollout_epsilon: f64,
+        rollout_depth: usize,
         previous_states: &mut HashSet<T>,
+        move_away_constant: f64,
     ) -> i32 {
         if self.children.len() == 0 {
             let (expanded, no_children) = self.expand(previous_states);
 
             if no_children {
-                let value = (self.average_evaluation - self.average_evaluation.abs() * MOVE_AWAY_CONSTANT) as i32;
+                let value = (self.average_evaluation
+                    - self.average_evaluation.abs() * move_away_constant)
+                    as i32;
                 self.update_average(value);
                 return value;
             }
 
-            let value = expanded.simulate(rollout, tree, rollout_epsilon, previous_states);
+            let value = expanded.simulate(
+                rollout,
+                tree,
+                rollout_epsilon,
+                rollout_depth,
+                previous_states,
+            );
             self.update_average(value);
             return value;
         }
 
         let best_index = self.best_ucb_score_index(uct_exploration);
 
-        let value = self.children[best_index].run(uct_exploration, rollout, tree, rollout_epsilon, previous_states);
+        let value = self.children[best_index].run(
+            uct_exploration,
+            rollout,
+            tree,
+            rollout_epsilon,
+            rollout_depth,
+            previous_states,
+            move_away_constant,
+        );
         self.update_average(value);
         value
     }
@@ -114,15 +145,16 @@ where
         rollout: RollOut<T>,
         tree: &Box<dyn EvaluationTree<T>>,
         rollout_epsilon: f64,
-        previous_states: &HashSet<T>
+        rollout_depth: usize,
+        previous_states: &HashSet<T>,
     ) -> i32 {
         rollout(
             self.state,
             &self.mutations,
             tree,
-            ROLLOUT_DEPTH,
+            rollout_depth,
             rollout_epsilon,
-            previous_states
+            previous_states,
         )
     }
 
@@ -197,18 +229,21 @@ fn ucb(
 fn get_children_from_mutations<'a, T>(
     state: T,
     mutations: &'a Vec<Box<Mutation<T>>>,
-    previous_states: &mut HashSet<T>
+    previous_states: &mut HashSet<T>,
 ) -> Vec<TreeSearchNode<'a, T>>
 where
     T: State,
 {
-    mutations.iter().filter_map(|mutation| {
-        let child_state = mutation(state);
-        if previous_states.contains(&child_state) {
-            None
-        } else {
-            previous_states.insert(child_state);
-            Some(TreeSearchNode::new(child_state, mutations, previous_states))
-        }
-    }).collect()
+    mutations
+        .iter()
+        .filter_map(|mutation| {
+            let child_state = mutation(state);
+            if previous_states.contains(&child_state) {
+                None
+            } else {
+                previous_states.insert(child_state);
+                Some(TreeSearchNode::new(child_state, mutations, previous_states))
+            }
+        })
+        .collect()
 }
