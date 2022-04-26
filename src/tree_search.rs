@@ -38,7 +38,7 @@ where
     times_visited: u32,
     average_evaluation: f64,
     state: T,
-    children: Vec<Box<TreeSearchNode<'a, T>>>,
+    children: Vec<TreeSearchNode<'a, T>>,
     mutations: &'a Vec<Box<Mutation<T>>>,
 }
 
@@ -46,14 +46,14 @@ impl<'a, T> TreeSearchNode<'a, T>
 where
     T: State,
 {
-    fn new(state: T, mutations: &'a Vec<Box<Mutation<T>>>) -> Box<TreeSearchNode<'a, T>> {
-        Box::new(TreeSearchNode {
+    fn new(state: T, mutations: &'a Vec<Box<Mutation<T>>>) -> TreeSearchNode<'a, T> {
+        TreeSearchNode {
             times_visited: 0,
             average_evaluation: 0.0,
             state: state,
             children: Vec::new(),
             mutations: mutations,
-        })
+        }
     }
 
     fn select(&mut self, uct_exploration: f64) -> &mut TreeSearchNode<'a, T> {
@@ -156,7 +156,7 @@ fn ucb(
 fn get_children_from_mutations<'a, T>(
     state: T,
     mutations: &'a Vec<Box<Mutation<T>>>,
-) -> Vec<Box<TreeSearchNode<'a, T>>>
+) -> Vec<TreeSearchNode<'a, T>>
 where
     T: State,
 {
