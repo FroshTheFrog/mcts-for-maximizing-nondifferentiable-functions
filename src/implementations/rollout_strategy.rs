@@ -25,7 +25,7 @@ pub fn rollout_strategy<T>(
     for mutation in mutations {
         let new_state = mutation(state);
 
-        let new_state_value = get_rollout_Value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, start_value);
+        let new_state_value = get_rollout_value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, start_value);
 
         if new_state_value > best_value {
             best_value = new_state_value;
@@ -51,7 +51,7 @@ pub fn rollout_strategy<T>(
     ))
 }
 
-fn get_rollout_Value<T>(
+fn get_rollout_value<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
     tree : &Box<dyn EvaluationTree<T>>,
@@ -69,7 +69,7 @@ fn get_rollout_Value<T>(
 
         let new_state = mutation(state);
 
-        let down_the_tree_value = get_rollout_Value(new_state, mutations, tree, depth - 1, start_value);
+        let down_the_tree_value = get_rollout_value(new_state, mutations, tree, depth - 1, start_value);
 
         if down_the_tree_value > best_value && down_the_tree_value != start_value {
             best_value = down_the_tree_value;
