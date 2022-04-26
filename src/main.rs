@@ -36,7 +36,7 @@ fn main() {
         1.0,
         true
     );
-    println!("_______________________________");
+    println!("\n_______________________________");
     println!("\nSTART: {}\n", tree.evaluate(start_state));
 
     println!("AFTER SMART SEARCH: {}", tree.evaluate(smart_searched_state));
@@ -44,5 +44,5 @@ fn main() {
 
     println!("\nAFTER RANDOM SEARCH: {}", tree.evaluate(random_searched_state));
     println!("WITH A TREE SIZE OF: {}\n", random_tree_size);
-    println!("_______________________________");
+    println!("_______________________________\n");
 }
