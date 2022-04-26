@@ -191,21 +191,13 @@ fn get_children_from_mutations<'a, T>(
 where
     T: State,
 {
-    let items = mutations
-        .iter()
-        .map(|mutation| {
-            let child_state = mutation(state);
-            TreeSearchNode::new(child_state, mutations, previous_states)
-        }).collect();
-
-    filter_by_prev_states(items, previous_states)
-}
-
-fn filter_by_prev_states<'a, T>(items : Vec<TreeSearchNode<'a, T>>, previous_states: &HashSet<T>) -> Vec<TreeSearchNode<'a, T>>
-where
-    T: State,
-{
-    items.into_iter().filter(|state|{
-        !previous_states.contains(&state.state)
+    mutations.iter().filter_map(|mutation| {
+        let child_state = mutation(state);
+        if previous_states.contains(&child_state) {
+            None
+        } else {
+            previous_states.insert(child_state);
+            Some(TreeSearchNode::new(child_state, mutations, previous_states))
+        }
     }).collect()
 }
