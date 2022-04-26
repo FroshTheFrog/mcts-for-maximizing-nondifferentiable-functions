@@ -19,13 +19,7 @@ where
     let mut base_node = TreeSearchNode::new(start_state, &mutations);
 
     for _ in 0..loops {
-        let selected = base_node.select(uct_exploration);
-
-        let expanded = selected.expand();
-
-        let evaluated = expanded.simulate(rollout, tree, rollout_epsilon);
-
-        // expanded.backpropagate(evaluated);
+        base_node.run(uct_exploration, rollout, tree, rollout_epsilon);
     }
 
     base_node.get_max_state(tree)
@@ -56,34 +50,28 @@ where
         }
     }
 
-    fn select(&mut self, uct_exploration: f64) -> &mut TreeSearchNode<'a, T> {
+    fn run(
+        &mut self,
+        uct_exploration: f64,
+        rollout: RollOut<T>,
+        tree: &Box<dyn EvaluationTree<T>>,
+        rollout_epsilon: f64,
+    ) -> i32 {
         if self.children.len() == 0 {
-            return self;
+            let expanded = self.expand();
+            let value = expanded.simulate(rollout, tree, rollout_epsilon);
+            self.update_average(value);
+            return value;
         }
 
-        let mut best_ucb_score = 0.0;
-        let mut best_index = 0;
+        let best_index = self.best_ucb_score_index(uct_exploration);
 
-        for index in 0..self.children.len() {
-            let child = &self.children[index];
-
-            let child_ubc_score = ucb(
-                child.average_evaluation,
-                uct_exploration,
-                child.times_visited,
-                self.times_visited,
-            );
-
-            if child_ubc_score > best_ucb_score {
-                best_ucb_score = child_ubc_score;
-                best_index = index;
-            }
-        }
-
-        self.children[best_index].select(uct_exploration)
+        let value = self.children[best_index].run(uct_exploration, rollout, tree, rollout_epsilon);
+        self.update_average(value);
+        value
     }
 
-    fn expand(&'a mut self) -> &TreeSearchNode<'a, T> {
+    fn expand(&mut self) -> &TreeSearchNode<T> {
         if self.times_visited == 0 {
             return self;
         }
@@ -108,15 +96,28 @@ where
         )
     }
 
-    /*
-    fn backpropagate(&mut self, value: i32) {
-        self.update_average(value);
+    fn best_ucb_score_index(&self, uct_exploration: f64) -> usize {
+        let mut best_ucb_score = 0.0;
+        let mut best_index = 0;
 
-        if let Some(parent) = self.parent {
-            parent.backpropagate(value);
+        for index in 0..self.children.len() {
+            let child = &self.children[index];
+
+            let child_ubc_score = ucb(
+                child.average_evaluation,
+                uct_exploration,
+                child.times_visited,
+                self.times_visited,
+            );
+
+            if child_ubc_score > best_ucb_score {
+                best_ucb_score = child_ubc_score;
+                best_index = index;
+            }
         }
+
+        best_index
     }
-    */
 
     fn get_max_state(&self, tree: &Box<dyn EvaluationTree<T>>) -> T {
         let mut best_state = self.state;
