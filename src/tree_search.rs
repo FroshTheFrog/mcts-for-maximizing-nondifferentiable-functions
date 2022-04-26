@@ -90,7 +90,7 @@ where
 
         self.children = get_children_from_mutations(self.state, self.mutations);
 
-        self.children[0].as_mut()
+        &self.children[0]
     }
 
     fn simulate(
