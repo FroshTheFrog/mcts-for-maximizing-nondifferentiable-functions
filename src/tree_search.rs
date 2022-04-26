@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::collections::HashSet;
 
 use crate::{
@@ -14,6 +15,7 @@ pub fn search<T>(
     rollout_epsilon: f64,
     uct_exploration: f64,
     move_away_constant: f64,
+    random_search : bool
 ) -> (T, u32)
 where
     T: State,
@@ -37,6 +39,7 @@ where
             rollout_depth,
             &mut previous_states,
             move_away_constant,
+            random_search
         );
     }
 
@@ -88,6 +91,7 @@ where
         rollout_depth: usize,
         previous_states: &mut HashSet<T>,
         move_away_constant: f64,
+        random_search : bool
     ) -> i32 {
         if self.children.len() == 0 {
             let (expanded, no_children) = self.expand(previous_states);
@@ -111,7 +115,7 @@ where
             return value;
         }
 
-        let best_index = self.best_ucb_score_index(uct_exploration);
+        let best_index = self.best_ucb_score_index(uct_exploration, random_search);
 
         let value = self.children[best_index].run(
             uct_exploration,
@@ -121,6 +125,7 @@ where
             rollout_depth,
             previous_states,
             move_away_constant,
+            random_search
         );
         self.update_average(value);
         value
@@ -158,7 +163,12 @@ where
         )
     }
 
-    fn best_ucb_score_index(&self, uct_exploration: f64) -> usize {
+    fn best_ucb_score_index(&self, uct_exploration: f64, random_search: bool) -> usize {
+        if random_search {
+            let mut rng = rand::thread_rng();
+            return rng.gen_range(0..self.children.len());
+        }
+
         let mut best_ucb_score = 0.0;
         let mut best_index = 0;
 

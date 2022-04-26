@@ -13,20 +13,36 @@ fn main() {
 
     let tree = evaluations_tree::build_evaluations_tree(11);
 
-    let (searched_state, tree_size) = search(
+    let (smart_searched_state, smart_tree_size) = search(
         start_state,
         rollout_strategy,
         &tree,
-        100000,
+        10000,
         40,
         0.2,
         2.0,
         1.0,
+        false
     );
 
-    println!("START: {}", tree.evaluate(start_state));
+    let (random_searched_state, random_tree_size) = search(
+        start_state,
+        rollout_strategy,
+        &tree,
+        10000,
+        40,
+        0.2,
+        2.0,
+        1.0,
+        true
+    );
+    println!("_______________________________");
+    println!("\nSTART: {}\n", tree.evaluate(start_state));
 
-    println!("AFTER SEARCH: {}", tree.evaluate(searched_state));
+    println!("AFTER SMART SEARCH: {}", tree.evaluate(smart_searched_state));
+    println!("WITH A TREE SIZE OF: {}", smart_tree_size);
 
-    println!("WITH A TREE SIZE OF: {}", tree_size);
+    println!("\nAFTER RANDOM SEARCH: {}", tree.evaluate(random_searched_state));
+    println!("WITH A TREE SIZE OF: {}\n", random_tree_size);
+    println!("_______________________________");
 }
