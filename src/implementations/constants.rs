@@ -1,7 +1,7 @@
 
-pub const STATE_SIZE : usize = 8;
-pub const STATE_VALUE_MIN : i32 = -500;
-pub const STATE_VALUE_MAX : i32 = 500;
+pub const STATE_SIZE : usize = 5;
+pub const STATE_VALUE_MIN : i32 = -50000;
+pub const STATE_VALUE_MAX : i32 = 50000;
 
 pub const NODE_VALUE_MIN : i32 = -50;
 pub const NODE_VALUE_MAX : i32 = 50;
