@@ -31,7 +31,7 @@ fn run() {
         &tree,
         loops,
         40,
-        0.05,
+        0.1,
         1.5,
         1.0,
         true
@@ -48,7 +48,7 @@ fn run() {
         1.0,
         true
     );
-    
+
     println!("\n_______________________________");
     print!("\nWith {} loops", loops);
 

@@ -94,9 +94,9 @@ where
         random_search : bool
     ) -> i32 {
         if self.children.len() == 0 {
-            let (expanded, no_children) = self.expand(previous_states);
+            let (expanded, no_non_explored_states) = self.expand(previous_states);
 
-            if no_children {
+            if no_non_explored_states {
                 let value = (self.average_evaluation
                     - self.average_evaluation.abs() * move_away_constant)
                     as i32;
