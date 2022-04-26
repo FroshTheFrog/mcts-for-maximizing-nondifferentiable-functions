@@ -15,7 +15,7 @@ pub fn search<T>(
     rollout_epsilon: f64,
     uct_exploration: f64,
     move_away_constant: f64,
-    random_search : bool
+    random_search: bool,
 ) -> (T, u32)
 where
     T: State,
@@ -39,7 +39,7 @@ where
             rollout_depth,
             &mut previous_states,
             move_away_constant,
-            random_search
+            random_search,
         );
     }
 
@@ -91,7 +91,7 @@ where
         rollout_depth: usize,
         previous_states: &mut HashSet<T>,
         move_away_constant: f64,
-        random_search : bool
+        random_search: bool,
     ) -> i32 {
         if self.children.len() == 0 {
             let (expanded, no_non_explored_states) = self.expand(previous_states);
@@ -125,7 +125,7 @@ where
             rollout_depth,
             previous_states,
             move_away_constant,
-            random_search
+            random_search,
         );
         self.update_average(value);
         value
