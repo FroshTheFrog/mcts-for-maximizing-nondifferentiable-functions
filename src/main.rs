@@ -12,7 +12,7 @@ fn main() {
 
     println!("START: {}", tree.evaluate(start_state));
 
-    let searched_state = search(start_state, rollout_strategy, &tree, 500, 0.3, 2.0);
+    let searched_state = search(start_state, rollout_strategy, &tree, 10000, 0.3, 2.0);
 
     println!("AFTER SEARCH: {}", tree.evaluate(searched_state));
 }

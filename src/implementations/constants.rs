@@ -8,3 +8,5 @@ pub const NODE_VALUE_MAX : i32 = 10;
 
 pub const ROLLOUT_DEPTH: usize = 20;
 pub const HEURISTIC_SEARCH_DEPTH : usize = 1;
+
+pub const LOOP_PRINT_INTERVAL : u32 = 100;

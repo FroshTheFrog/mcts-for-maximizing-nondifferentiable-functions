@@ -1,5 +1,5 @@
 use crate::{
-    implementations::constants::ROLLOUT_DEPTH,
+    implementations::constants::{ROLLOUT_DEPTH, LOOP_PRINT_INTERVAL},
     types::{EvaluationTree, Mutation, RollOut, State},
 };
 
@@ -18,7 +18,12 @@ where
 
     let mut base_node = TreeSearchNode::new(start_state, &mutations);
 
-    for _ in 0..loops {
+    for loop_number in 0..loops {
+        
+        if loop_number % LOOP_PRINT_INTERVAL == 0 {
+            println!("Loop {}", loop_number);
+        }
+
         base_node.run(uct_exploration, rollout, tree, rollout_epsilon);
     }
 
