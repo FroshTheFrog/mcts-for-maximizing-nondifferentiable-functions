@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::{
-    implementations::constants::{ROLLOUT_DEPTH, LOOP_PRINT_INTERVAL},
+    implementations::constants::{ROLLOUT_DEPTH, LOOP_PRINT_INTERVAL, MOVE_AWAY_CONSTANT},
     types::{EvaluationTree, Mutation, RollOut, State},
 };
 
@@ -78,7 +78,7 @@ where
             let (expanded, no_children) = self.expand(previous_states);
 
             if no_children {
-                let value = (self.average_evaluation as i32) - ((self.average_evaluation as i32) / ((self.times_visited as i32) + 1)).abs();
+                let value = (self.average_evaluation - self.average_evaluation.abs() * MOVE_AWAY_CONSTANT) as i32;
                 self.update_average(value);
                 return value;
             }

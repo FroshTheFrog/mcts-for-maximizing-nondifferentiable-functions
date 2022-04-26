@@ -10,3 +10,5 @@ pub const ROLLOUT_DEPTH: usize = 40;
 pub const HEURISTIC_SEARCH_DEPTH : usize = 0;
 
 pub const LOOP_PRINT_INTERVAL : u32 = 1000;
+
+pub const MOVE_AWAY_CONSTANT : f64 = 1.0;
