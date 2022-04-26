@@ -29,7 +29,6 @@ Here are the results from the last ten runs with a rollout depth of 40 and 10000
 
 _______________________________
 
-With 100000 loops
 START: -36591884
 
 AFTER SMART SEARCH: 53196443
@@ -40,7 +39,6 @@ WITH A TREE SIZE OF: 744283
 
 _______________________________
 
-With 100000 loops
 START: 2740294
 
 AFTER SMART SEARCH: 39041681
@@ -51,7 +49,6 @@ WITH A TREE SIZE OF: 716736
 
 _______________________________
 
-With 100000 loops
 START: -12754592
 
 AFTER SMART SEARCH: 58706781
@@ -62,7 +59,6 @@ WITH A TREE SIZE OF: 680348
 
 _______________________________
 
-With 100000 loops
 START: 580105
 
 AFTER SMART SEARCH: 52202410
@@ -73,7 +69,6 @@ WITH A TREE SIZE OF: 670935
 
 _______________________________
 
-With 100000 loops
 START: -14259369
 
 AFTER SMART SEARCH: 31269977
@@ -84,7 +79,6 @@ WITH A TREE SIZE OF: 675739
 
 _______________________________
 
-With 100000 loops
 START: -4499691
 
 AFTER SMART SEARCH: 36302560
@@ -95,7 +89,6 @@ WITH A TREE SIZE OF: 726483
 
 _______________________________
 
-With 100000 loops
 START: 22564720
 
 AFTER SMART SEARCH: 41122564
@@ -106,7 +99,6 @@ WITH A TREE SIZE OF: 674727
 
 _______________________________
 
-With 100000 loops
 START: -12289775
 
 AFTER SMART SEARCH: 38173292
@@ -117,7 +109,6 @@ WITH A TREE SIZE OF: 759507
 
 _______________________________
 
-With 100000 loops
 START: -15923824
 
 AFTER SMART SEARCH: 73376684
@@ -128,7 +119,6 @@ WITH A TREE SIZE OF: 692931
 
 _______________________________
 
-With 100000 loops
 START: -2380563
 
 AFTER SMART SEARCH: 45010689
