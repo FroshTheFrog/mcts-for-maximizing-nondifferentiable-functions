@@ -10,7 +10,7 @@ pub fn search<T>(
     loops: u32,
     rollout_epsilon: f64,
     uct_exploration: f64,
-) -> T
+) -> (T, u32)
 where
     T: State,
 {
@@ -27,7 +27,10 @@ where
         base_node.run(uct_exploration, rollout, tree, rollout_epsilon);
     }
 
-    base_node.get_max_state(tree)
+    let best_state = base_node.get_max_state(tree);
+    let tree_size = base_node.get_tree_size();
+
+    (best_state, tree_size)
 }
 
 struct TreeSearchNode<'a, T>
@@ -124,6 +127,12 @@ where
         best_index
     }
 
+    fn update_average(&mut self, value: i32) {
+        self.times_visited += 1;
+        self.average_evaluation +=
+            (value as f64 - self.average_evaluation) / self.times_visited as f64;
+    }
+
     fn get_max_state(&self, tree: &Box<dyn EvaluationTree<T>>) -> T {
         let mut best_state = self.state;
 
@@ -138,10 +147,14 @@ where
         best_state
     }
 
-    fn update_average(&mut self, value: i32) {
-        self.times_visited += 1;
-        self.average_evaluation +=
-            (value as f64 - self.average_evaluation) / self.times_visited as f64;
+    fn get_tree_size(&self) -> u32 {
+        let mut size = 1;
+
+        for child in &self.children {
+            size += child.get_tree_size();
+        }
+
+        size
     }
 }
 

@@ -10,9 +10,11 @@ fn main() {
 
     let tree = evaluations_tree::build_evaluations_tree(11);
 
-    let searched_state = search(start_state, rollout_strategy, &tree, 100000, 0.3, 2.0);
+    let (searched_state, tree_size) = search(start_state, rollout_strategy, &tree, 200000, 0.3, 2.0);
 
     println!("START: {}", tree.evaluate(start_state));
 
     println!("AFTER SEARCH: {}", tree.evaluate(searched_state));
+
+    println!("WITH A TREE SIZE OF: {}", tree_size);
 }
