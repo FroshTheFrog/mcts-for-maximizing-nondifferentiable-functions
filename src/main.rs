@@ -9,34 +9,48 @@ use crate::{
 };
 
 fn main() {
+    let run_times = 10;
+
+    for _ in 0..run_times {
+        run();
+    }
+}
+
+
+fn run() {
+
     let start_state = state_array::StateArray::random_state();
 
-    let tree = evaluations_tree::build_evaluations_tree(11);
+    let tree = evaluations_tree::build_evaluations_tree(13);
+
+    let loops = 100000;
 
     let (smart_searched_state, smart_tree_size) = search(
         start_state,
         rollout_strategy,
         &tree,
-        100000,
+        loops,
         40,
         0.2,
-        2.0,
         1.0,
-        false
+        1.0,
+        true
     );
 
     let (random_searched_state, random_tree_size) = search(
         start_state,
         rollout_strategy,
         &tree,
-        100000,
+        loops,
         1,
         0.2,
-        2.0,
+        1.0,
         1.0,
         true
     );
     println!("\n_______________________________");
+    print!("\nWith {} loops", loops);
+
     println!("\nSTART: {}\n", tree.evaluate(start_state));
 
     println!("AFTER SMART SEARCH: {}", tree.evaluate(smart_searched_state));
