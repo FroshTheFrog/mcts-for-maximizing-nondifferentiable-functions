@@ -1,4 +1,4 @@
-use std::cmp;
+use std::{cmp, collections::HashSet};
 use crate::types::{Mutation, EvaluationTree, State};
 use rand::Rng;
 
@@ -10,9 +10,9 @@ pub fn rollout_strategy<T>(
     tree : &Box<dyn EvaluationTree<T>>,
     depth : usize,
     rollout_epsilon : f64,
+    previous_states : &HashSet<T>,
     ) -> i32 where T : State {
 
-    // Keep track of where we currently care so that it does not get stuck in local minima.
     let start_value = tree.evaluate(state);
 
     let mut best_value = i32::MIN;
@@ -25,7 +25,7 @@ pub fn rollout_strategy<T>(
     for mutation in mutations {
         let new_state = mutation(state);
 
-        let new_state_value = get_rollout_value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, start_value);
+        let new_state_value = get_rollout_value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, previous_states);
 
         if new_state_value > best_value {
             best_value = new_state_value;
@@ -47,7 +47,8 @@ pub fn rollout_strategy<T>(
         mutations,
         tree,
         depth -1,
-        rollout_epsilon
+        rollout_epsilon,
+        previous_states
     ))
 }
 
@@ -56,7 +57,7 @@ fn get_rollout_value<T>(
     mutations: &Vec<Box<Mutation<T>>>,
     tree : &Box<dyn EvaluationTree<T>>,
     depth : usize,
-    start_value : i32
+    previous_states : &HashSet<T>,
     ) -> i32 where T : State {
 
     let mut best_value = tree.evaluate(state);
@@ -69,9 +70,9 @@ fn get_rollout_value<T>(
 
         let new_state = mutation(state);
 
-        let down_the_tree_value = get_rollout_value(new_state, mutations, tree, depth - 1, start_value);
+        let down_the_tree_value = get_rollout_value(new_state, mutations, tree, depth - 1, previous_states);
 
-        if down_the_tree_value > best_value && down_the_tree_value != start_value {
+        if down_the_tree_value > best_value && !previous_states.contains(&new_state) {
             best_value = down_the_tree_value;
         }
     }

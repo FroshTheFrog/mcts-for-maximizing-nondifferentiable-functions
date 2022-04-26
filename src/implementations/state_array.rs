@@ -3,6 +3,7 @@ use std::fmt;
 
 use super::{constants::{STATE_VALUE_MIN, STATE_VALUE_MAX, STATE_SIZE}, utils::random_array};
 
+#[derive(Hash)]
 pub struct StateArray(pub [i32; STATE_SIZE]);
 
 fn make_add_one_mutation(index : usize) -> Box<Mutation<StateArray>> {
@@ -70,3 +71,10 @@ impl Clone for StateArray {
         StateArray(self.0)
     }
 }
+
+impl PartialEq for StateArray {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+impl Eq for StateArray {}
