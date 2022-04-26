@@ -10,7 +10,9 @@ fn main() {
 
     let tree = evaluations_tree::build_evaluations_tree(10);
 
+    println!("START: {}", tree.evaluate(start_state));
+
     let searched_state = search(start_state, rollout_strategy, &tree, 500, 0.3, 2.0);
 
-    println!("{}", tree.evaluate(searched_state));
+    println!("AFTER SEARCH: {}", tree.evaluate(searched_state));
 }
