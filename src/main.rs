@@ -31,10 +31,10 @@ fn run() {
         &tree,
         loops,
         40,
-        0.1,
+        0.05,
         1.5,
         1.0,
-        true
+        false
     );
 
     let (random_searched_state, random_tree_size) = search(
@@ -50,7 +50,6 @@ fn run() {
     );
 
     println!("\n_______________________________");
-    print!("\nWith {} loops", loops);
 
     println!("\nSTART: {}\n", tree.evaluate(start_state));
 
