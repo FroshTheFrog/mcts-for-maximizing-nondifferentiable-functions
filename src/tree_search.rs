@@ -78,7 +78,7 @@ where
             let (expanded, no_children) = self.expand(previous_states);
 
             if no_children {
-                let value = -(self.average_evaluation as i32) / ((self.times_visited as i32) + 1);
+                let value = (self.average_evaluation as i32) - ((self.average_evaluation as i32) / ((self.times_visited as i32) + 1)).abs();
                 self.update_average(value);
                 return value;
             }
