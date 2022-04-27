@@ -7,7 +7,7 @@ use super::{constants::HEURISTIC_SEARCH_DEPTH};
 pub fn rollout_strategy<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree : &Box<dyn EvaluationTree<T>>,
+    tree : &dyn EvaluationTree<T>,
     depth : usize,
     rollout_epsilon : f64,
     previous_states : &HashSet<T>,
@@ -55,7 +55,7 @@ pub fn rollout_strategy<T>(
 fn get_rollout_value<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree : &Box<dyn EvaluationTree<T>>,
+    tree : &dyn EvaluationTree<T>,
     depth : usize,
     previous_states : &HashSet<T>,
     ) -> i32 where T : State {

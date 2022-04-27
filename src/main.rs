@@ -28,7 +28,7 @@ fn run() {
     let (smart_searched_state, smart_tree_size) = search(
         start_state,
         rollout_strategy,
-        &tree,
+        tree.as_ref(),
         loops,
         40,
         0.05,
@@ -40,7 +40,7 @@ fn run() {
     let (random_searched_state, random_tree_size) = search(
         start_state,
         rollout_strategy,
-        &tree,
+        tree.as_ref(),
         loops,
         1,
         0.05,
