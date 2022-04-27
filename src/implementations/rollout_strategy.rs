@@ -1,18 +1,20 @@
-use std::{cmp, collections::HashSet};
-use crate::types::{Mutation, EvaluationTree, State};
+use crate::types::{EvaluationTree, Mutation, State};
 use rand::Rng;
+use std::{cmp, collections::HashSet};
 
-use super::{constants::HEURISTIC_SEARCH_DEPTH};
+use super::constants::HEURISTIC_SEARCH_DEPTH;
 
 pub fn rollout_strategy<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree : &dyn EvaluationTree<T>,
-    depth : usize,
-    rollout_epsilon : f64,
-    previous_states : &HashSet<T>,
-    ) -> i32 where T : State {
-
+    tree: &dyn EvaluationTree<T>,
+    depth: usize,
+    rollout_epsilon: f64,
+    previous_states: &HashSet<T>,
+) -> i32
+where
+    T: State,
+{
     let start_value = tree.evaluate(state);
 
     let mut best_value = i32::MIN;
@@ -25,7 +27,13 @@ pub fn rollout_strategy<T>(
     for mutation in mutations {
         let new_state = mutation(state);
 
-        let new_state_value = get_rollout_value(new_state, mutations, tree, HEURISTIC_SEARCH_DEPTH, previous_states);
+        let new_state_value = get_rollout_value(
+            new_state,
+            mutations,
+            tree,
+            HEURISTIC_SEARCH_DEPTH,
+            previous_states,
+        );
 
         if new_state_value > best_value {
             best_value = new_state_value;
@@ -41,36 +49,38 @@ pub fn rollout_strategy<T>(
 
     cmp::max(
         start_value,
-
-    rollout_strategy(
-        best_mutation(state),
-        mutations,
-        tree,
-        depth -1,
-        rollout_epsilon,
-        previous_states
-    ))
+        rollout_strategy(
+            best_mutation(state),
+            mutations,
+            tree,
+            depth - 1,
+            rollout_epsilon,
+            previous_states,
+        ),
+    )
 }
 
 fn get_rollout_value<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree : &dyn EvaluationTree<T>,
-    depth : usize,
-    previous_states : &HashSet<T>,
-    ) -> i32 where T : State {
-
+    tree: &dyn EvaluationTree<T>,
+    depth: usize,
+    previous_states: &HashSet<T>,
+) -> i32
+where
+    T: State,
+{
     let mut best_value = tree.evaluate(state);
 
     if depth == 0 {
-        return best_value
+        return best_value;
     }
 
     for mutation in mutations {
-
         let new_state = mutation(state);
 
-        let down_the_tree_value = get_rollout_value(new_state, mutations, tree, depth - 1, previous_states);
+        let down_the_tree_value =
+            get_rollout_value(new_state, mutations, tree, depth - 1, previous_states);
 
         if down_the_tree_value > best_value && !previous_states.contains(&new_state) {
             best_value = down_the_tree_value;

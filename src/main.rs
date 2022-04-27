@@ -16,9 +16,7 @@ fn main() {
     }
 }
 
-
 fn run() {
-
     let start_state = state_array::StateArray::random_state();
 
     let tree = evaluations_tree::build_evaluations_tree(13);
@@ -34,7 +32,7 @@ fn run() {
         0.05,
         1.5,
         1.0,
-        false
+        false,
     );
 
     let (random_searched_state, random_tree_size) = search(
@@ -46,17 +44,23 @@ fn run() {
         0.05,
         1.5,
         1.0,
-        true
+        true,
     );
 
     println!("\n_______________________________");
 
     println!("\nSTART: {}\n", tree.evaluate(start_state));
 
-    println!("AFTER SMART SEARCH: {}", tree.evaluate(smart_searched_state));
+    println!(
+        "AFTER SMART SEARCH: {}",
+        tree.evaluate(smart_searched_state)
+    );
     println!("WITH A TREE SIZE OF: {}", smart_tree_size);
 
-    println!("\nAFTER RANDOM SEARCH: {}", tree.evaluate(random_searched_state));
+    println!(
+        "\nAFTER RANDOM SEARCH: {}",
+        tree.evaluate(random_searched_state)
+    );
     println!("WITH A TREE SIZE OF: {}\n", random_tree_size);
     println!("_______________________________\n");
 }

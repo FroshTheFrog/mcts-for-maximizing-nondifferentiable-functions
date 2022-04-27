@@ -138,7 +138,7 @@ where
 
         self.children = get_children_from_mutations(self.state, self.mutations, previous_states);
 
-        if self.children.is_empty(){
+        if self.children.is_empty() {
             return (self, true);
         }
 
