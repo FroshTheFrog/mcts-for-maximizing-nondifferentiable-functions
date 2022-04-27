@@ -28,13 +28,13 @@ Here are the results from the last 10 runs with a rollout depth of 40 and 100000
 
 ### Output Format:
 
-START: {start state utility)
+START: { start state utility )
 
-AFTER SMART SEARCH: {state utility after smart search)
-WITH A TREE SIZE OF: {number of nodes in search tree after smart search)
+AFTER SMART SEARCH: { state utility after smart search }
+WITH A TREE SIZE OF: { number of nodes in search tree after smart search }
 
-AFTER RANDOM SEARCH: {state utility after random search)
-WITH A TREE SIZE OF: {number of nodes in search tree after random search)
+AFTER RANDOM SEARCH: { state utility after random search }
+WITH A TREE SIZE OF: { number of nodes in search tree after random search }
 
 _______________________________
 
