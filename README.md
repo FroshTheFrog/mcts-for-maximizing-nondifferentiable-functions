@@ -21,7 +21,7 @@ A utility function was used to evaluate states. To make it nondifferentiable, I 
 The rollout strategy selects actions based on a greedy heuristic. This heuristic returns the max utility of all the states explored when doing a breadth-first search from each action to a depth. In practice however, this strategy was not performant, so mutations were selected based on the utility of the state that it directly led to. If you wish to increase the search depth passed a depth of 0, you can do so in `implementations\constants\HEURISTIC_SEARCH_DEPTH`. To encourage more exploration, I added an epsilon value that makes it choose a random action a percentage of the time during the rollout.
 
 ### **Other Special Considerations**
-* So that MCTS would not get stuck on a local maximum, I did not consider mutations that would lead to states that had already been explored. This was kept track of in a hash set. When the algorithm explores a node where every state leading from it has already been visited, it will backprapigate a utilty value up that is less then the average of the node. This way, MCTS will move away from that part of the tree.
+* So that MCTS would not get stuck on a local maximum, the algorithm did not consider mutations that would lead to states that had already been explored when applied to the current state. This was kept track of in a hash set. When the algorithm explores a node where every state leading from it has already been visited, it will backpropagate a utility value that is less than the node's average. This way, MCTS will move away from that part of the tree.
 * When done looping, the tree is searched to get the best state, and the state with the best utility is returned.
 
 # Results
