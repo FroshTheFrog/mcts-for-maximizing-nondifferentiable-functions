@@ -49,7 +49,7 @@ impl EvaluationTree<StateArray> for EvaluationLeaf {
 }
 
 pub fn build_evaluations_tree(depth : usize) -> Box<dyn EvaluationTree<StateArray>> {
-    if depth <= 0 {
+    if depth == 0 {
         Box::new(new_random_leaf())
     }
     else {

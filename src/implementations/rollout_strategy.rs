@@ -18,7 +18,7 @@ pub fn rollout_strategy<T>(
     let mut best_value = i32::MIN;
     let mut best_mutation = &mutations[0];
 
-    if depth <= 0 {
+    if depth == 0 {
         return start_value;
     }
 
@@ -62,7 +62,7 @@ fn get_rollout_value<T>(
 
     let mut best_value = tree.evaluate(state);
 
-    if depth <= 0 {
+    if depth == 0 {
         return best_value
     }
 

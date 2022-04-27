@@ -72,9 +72,9 @@ where
         let new_node = TreeSearchNode {
             times_visited: 0,
             average_evaluation: 0.0,
-            state: state,
+            state,
             children: Vec::new(),
-            mutations: mutations,
+            mutations,
         };
 
         previous_states.insert(state);
@@ -93,7 +93,7 @@ where
         move_away_constant: f64,
         random_search: bool,
     ) -> i32 {
-        if self.children.len() == 0 {
+        if self.children.is_empty() {
             let (expanded, no_non_explored_states) = self.expand(previous_states);
 
             if no_non_explored_states {
@@ -138,7 +138,7 @@ where
 
         self.children = get_children_from_mutations(self.state, self.mutations, previous_states);
 
-        if self.children.len() == 0 {
+        if self.children.is_empty(){
             return (self, true);
         }
 
