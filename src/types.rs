@@ -11,7 +11,7 @@ pub trait State: fmt::Display + Clone + Copy + Eq + std::hash::Hash {
 
 pub type Mutation<T> = dyn Fn(T) -> T;
 
-pub trait EvaluationTree<T>
+pub trait Evaluator<T>
 where
     T: State,
 {
@@ -19,4 +19,4 @@ where
 }
 
 pub type RollOut<T> =
-    fn(T, &Vec<Box<Mutation<T>>>, &dyn EvaluationTree<T>, usize, f64, &HashSet<T>) -> i32;
+    fn(T, &Vec<Box<Mutation<T>>>, &dyn Evaluator<T>, usize, f64, &HashSet<T>) -> i32;

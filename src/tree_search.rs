@@ -3,13 +3,13 @@ use std::collections::HashSet;
 
 use crate::{
     implementations::constants::LOOP_PRINT_INTERVAL,
-    types::{EvaluationTree, Mutation, RollOut, State},
+    types::{Evaluator, Mutation, RollOut, State},
 };
 
 pub fn search<T>(
     start_state: T,
     rollout: RollOut<T>,
-    tree: &dyn EvaluationTree<T>,
+    tree: &dyn Evaluator<T>,
     loops: u32,
     rollout_depth: usize,
     rollout_epsilon: f64,
@@ -86,7 +86,7 @@ where
         &mut self,
         uct_exploration: f64,
         rollout: RollOut<T>,
-        tree: &dyn EvaluationTree<T>,
+        tree: &dyn Evaluator<T>,
         rollout_epsilon: f64,
         rollout_depth: usize,
         previous_states: &mut HashSet<T>,
@@ -148,7 +148,7 @@ where
     fn simulate(
         &self,
         rollout: RollOut<T>,
-        tree: &dyn EvaluationTree<T>,
+        tree: &dyn Evaluator<T>,
         rollout_epsilon: f64,
         rollout_depth: usize,
         previous_states: &HashSet<T>,
@@ -197,7 +197,7 @@ where
             (value as f64 - self.average_evaluation) / self.times_visited as f64;
     }
 
-    fn get_max_state(&self, tree: &dyn EvaluationTree<T>) -> T {
+    fn get_max_state(&self, tree: &dyn Evaluator<T>) -> T {
         let mut best_state = self.state;
 
         for child in &self.children {

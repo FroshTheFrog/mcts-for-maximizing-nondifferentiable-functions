@@ -1,4 +1,4 @@
-use crate::types::{EvaluationTree, Mutation, State};
+use crate::types::{Evaluator, Mutation, State};
 use rand::Rng;
 use std::{cmp, collections::HashSet};
 
@@ -7,7 +7,7 @@ use super::constants::HEURISTIC_SEARCH_DEPTH;
 pub fn rollout_strategy<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree: &dyn EvaluationTree<T>,
+    tree: &dyn Evaluator<T>,
     depth: usize,
     rollout_epsilon: f64,
     previous_states: &HashSet<T>,
@@ -63,7 +63,7 @@ where
 fn get_rollout_value<T>(
     state: T,
     mutations: &Vec<Box<Mutation<T>>>,
-    tree: &dyn EvaluationTree<T>,
+    tree: &dyn Evaluator<T>,
     depth: usize,
     previous_states: &HashSet<T>,
 ) -> i32
