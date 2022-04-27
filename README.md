@@ -26,6 +26,16 @@ So that MCTS would not get stuck on a local maximum, the algorithm did not consi
 # Results
 Here are the results from the last 10 runs with a rollout depth of 40 and 100000 iterations. I chose to compare picking nodes in MCTS randomly vs. using UCB. As you can see, using UCB outperformed randomly choosing the states. What's especially notable is that the random search used much more memory than using UCB - as seen by the size of the trees. Note, when the action space was only add and subtract by one, it significantly outperformed the random search to a much greater extent. This makes sense as it could capitalize off the linearity of the dot product function in local areas in the state space more effectively than randomly searching. However, also keep in mind that the random search was much faster than MCTS using UCB because it did not have to do a playoff strategy. For that reason, randomly searching could be more efficient in terms of time complexity on average.
 
+### Output Format:
+
+START: {start state utility)
+
+AFTER SMART SEARCH: {state utility after smart search)
+WITH A TREE SIZE OF: {number of nodes in search tree after smart search)
+
+AFTER RANDOM SEARCH: {state utility after random search)
+WITH A TREE SIZE OF: {number of nodes in search tree after random search)
+
 _______________________________
 
 START: -48442113
