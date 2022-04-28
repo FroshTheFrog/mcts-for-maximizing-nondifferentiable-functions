@@ -8,7 +8,7 @@ I chose to test my implementation abstractly.
 The state is an array of random numbers.
 
 ### **Mutations**
-The possible mutations are as follows for each value in the state array. **Note:** I kept in mind prime factorization when choosing these mutations.
+The possible mutations are as follows for each value in the state array. **Note:** these numbers were picked with prime factorization in mind.
 * Add 1
 * Subtract 1
 * Multiply 2, 3, 5, 7 or 11
