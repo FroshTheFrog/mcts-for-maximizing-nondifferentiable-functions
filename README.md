@@ -15,7 +15,7 @@ The possible mutations are as follows for each value in the state array. **Note:
 * Divide 2, 3, 5, 7 or 11
 
 ### **Utility Function**
-A utility function was used to evaluate states. To make it nondifferentiable, I randomly constructed a tree (similar to a decision tree) that the state could be run through. A predicate moves the state in one direction or another at each node based on if one of the values in the state array is greater than a threshold. At each leaf is a random array of values. The utility of a state is found by moving it through the tree and then taking the dot product of it and the leaf it lands on.
+A utility function was used to evaluate states. To make it nondifferentiable, I randomly constructed a tree (similar to a decision tree) that the state could be run through. At each node, a predicate directs the state along one branch or another based on if a value at an index in the state array is greater than a threshold. At each leaf is a random array of values. The utility of a state is found by moving it through the tree and then taking the dot product of it and the leaf it lands on.
 
 ### **Rollout Strategy**
 The rollout strategy selects actions based on a greedy heuristic. This heuristic returns the max utility of all the states explored when doing a breadth-first search from each action to a depth. In practice however, this strategy was not performant, so mutations were selected based on the utility of the state that it directly led to. If you wish to increase the search depth passed a depth of 0, you can do so in `implementations\constants\HEURISTIC_SEARCH_DEPTH`. To encourage more exploration, I added an epsilon value that makes it choose a random action a percentage of the time during the rollout.
